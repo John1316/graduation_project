@@ -1,0 +1,339 @@
+<?php
+    require_once('functions/connection.php');
+    include('functions/product_function.php');
+    if (!isset($_SESSION['admin_id'])){
+
+        header("Location: index.php");
+    } 
+?>
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+<!-- BEGIN: Head-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="Frest admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
+    <meta name="keywords" content="admin template, Frest admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="author" content="PIXINVENT">
+    <title>Bootstrap Tables - Frest - Bootstrap HTML admin template</title>
+    <link rel="apple-touch-icon" href="app-assets/images/ico/apple-icon-120.png">
+    <link rel="shortcut icon" type="image/x-icon" href="app-assets/images/ico/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,600%7CIBM+Plex+Sans:300,400,500,600,700" rel="stylesheet">
+
+    <!-- BEGIN: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/vendors.min.css">
+    <!-- END: Vendor CSS-->
+
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="app-assets/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="app-assets/css/bootstrap-extended.css">
+    <link rel="stylesheet" type="text/css" href="app-assets/css/colors.css">
+    <link rel="stylesheet" type="text/css" href="app-assets/css/components.css">
+    <link rel="stylesheet" type="text/css" href="app-assets/css/themes/dark-layout.css">
+    <link rel="stylesheet" type="text/css" href="app-assets/css/themes/semi-dark-layout.css">
+    <!-- END: Theme CSS-->
+
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="app-assets/css/core/menu/menu-types/vertical-menu.css">
+    <!-- END: Page CSS-->
+
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!-- END: Custom CSS-->
+
+</head>
+<!-- END: Head-->
+
+<!-- BEGIN: Body-->
+
+<body class="vertical-layout vertical-menu-modern 2-columns  navbar-sticky footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+
+    <?php include('includes/navbar.php') ?>
+
+
+    <!-- BEGIN: Main Menu-->
+    <?php include('includes/sidebar.php') ?>
+
+    <!-- END: Main Menu-->
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+<div class="content-overlay"></div>
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-12 mb-2 mt-1">
+            <div class="row breadcrumbs-top">
+                <div class="col-12">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb p-0 mb-0">
+                            <li class="breadcrumb-item"><a href="dashboard.php"><i class="bx bx-home-alt"></i></a>
+                            </li>
+                            <li class="breadcrumb-item active">Products
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-body">
+        <!-- Basic Tables start -->
+        <div class="row" id="basic-table">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Products</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <!-- Table with outer spacing -->
+                            <div class="table-responsive">
+                                        <button class="btn btn-primary mb-4" data-toggle="modal" data-target="#add_product">Add Product</button>
+
+                                        <?php if(isset($inserted)) { ?>
+                                        <div class="alert alert-success" role="alert">
+                                            <strong><?php echo $inserted ?></strong>
+                                        </div>
+                                        <?php } ?>
+                                        <?php if(isset($deleted)) { ?>
+                                        <div class="alert alert-danger" role="alert">
+                                            <strong><?php echo $deleted ?></strong>
+                                        </div>
+                                        <?php } ?>
+                                        <?php if(isset($updated)) { ?>
+                                        <div class="alert alert-success" role="alert">
+                                            <strong><?php echo $updated ?></strong>
+                                        </div>
+                                        <?php } ?>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Price</th>
+                                            <th>Image</th>
+                                            <th>Category</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php 
+
+                                        $products = "SELECT products.id ,products.category_id , products.name , products.price, products.image, products.status , category.name AS category_name FROM `products` INNER JOIN category ON category.id = products.category_id";
+                                        $products_query = mysqli_query($connection, $products) or die('users_error'.mysqli_error());
+
+                                        while($result = mysqli_fetch_array($products_query)){
+
+                                        if($result['status'] == 1){ 
+                                            $status ="<span class='badge badge-dot bg-success me-1'>Showed</span>";
+                                        }else{
+                                            $status ="<span class='badge bg-danger me-1'>Hidden</span>";
+                                        }
+                                        ?>
+                                        <tr>
+                                            <td class="text-bold-500">#<?php echo $result['id'] ?></td>
+                                            <td><?php echo $result['name'] ?></td>
+                                            <td><?php echo $result['price'] ?></td>
+                                            <td>
+                                            <img src="images/<?php echo $result['image'] ?>" height="50" width="50" alt="">    
+                                            </td>
+                                            <td><?php echo $result['category_name'] ?></td>
+                                            <td><?php echo $status ?></td>
+                                            <td class="d-flex">
+
+
+                                            <button  data-toggle="modal" data-target="#update_product<?php echo $result['id'] ?>" class="pl-0 btn btn-transparent"><i class="badge-circle badge-circle-light-secondary bx bx-edit font-medium-1"></i></button>
+
+
+                                            <form  method="post">
+                                                <input type="hidden" name="p_id" id="p_id" value="<?php echo $result['id'] ?>">
+                                                <button name="delete_product" type="submit" class="pl-0 btn btn-transparent" onclick="return confirm('Are you want to delete <?php echo $result['name']
+                                                    ?>')"><i class="badge-circle badge-circle-light-secondary bx bx-trash font-medium-1"></i></button>
+                                            </form>
+                                            </td>
+                                        </tr>
+                                        <div id="update_product<?php echo $result['id'] ?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="my-modal-title">Update product</h5>
+                                                        <button class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form method="POST" enctype="multipart/form-data">
+                                                        <div class="row">
+                                                            <input type="hidden" name="p_id" value="<?php echo $result['id'] ?>">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label for="name">Name</label>
+                                                                    <input id="name" class="form-control" type="text" name="name" value="<?php echo $result['name'] ?>" required>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="price">price</label>
+                                                                    <input id="price" class="form-control" type="number" name="price" value="<?php echo $result['price'] ?>" required>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="image">image</label>
+                                                                    <input id="image" class="form-control" type="file" name="image" >
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="category">category</label>
+                                                                    <select name="category_id" value="<?php echo $result['category_id'] ?>" class="form-control" id="category">
+
+                                                                    <?php 
+
+                                                                        $categories = "SELECT * FROM `category`";
+                                                                        $category_query = mysqli_query($connection, $categories) or die('users_error'.mysqli_error());
+
+                                                                        while($result = mysqli_fetch_array($category_query)){
+
+
+                                                                        ?>
+                                                                        <option value="<?php echo $result['id'] ?>"><?php echo $result['name'] ?></option>
+                                                                        <?php
+                                                                        }
+                                                                        ?>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="category">status</label>
+                                                                    <select name="status" class="form-control" id="status" value="<?php echo $result['status'] ?>">
+                                                                        <option value="1">Show</option>
+                                                                        <option value="0 ">Hide</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" name="update_product" class="btn btn-primary">Update product</button>
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Basic Tables end -->
+    </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+    <div id="add_product" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="my-modal-title">Add product</h5>
+                    <button class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input id="name" class="form-control" type="text" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="price">price</label>
+                                <input id="price" class="form-control" type="number" name="price" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="image">image</label>
+                                <input id="image" class="form-control" type="file" name="image" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">category</label>
+                                <select name="category_id" class="form-control" id="category">
+                                <option value="">Select category</option>
+
+                                <?php 
+
+                                    $categories = "SELECT * FROM `category`";
+                                    $category_query = mysqli_query($connection, $categories) or die('users_error'.mysqli_error());
+
+                                    while($result = mysqli_fetch_array($category_query)){
+
+
+                                    ?>
+                                    <option value="<?php echo $result['id'] ?>"><?php echo $result['name'] ?></option>
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">status</label>
+                                <select name="status" class="form-control" id="status">
+                                    <option value="">Select status</option>
+                                    <option value="1">Show</option>
+                                    <option value="0 ">Hide</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="add_product" class="btn btn-primary">Add product</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <!-- BEGIN: Footer-->
+    <footer class="footer footer-static footer-light">
+        <p class="clearfix mb-0"><span class="float-left d-inline-block">2020 &copy; PIXINVENT</span><span class="float-right d-sm-inline-block d-none">Crafted with<i class="bx bxs-heart pink mx-50 font-small-3"></i>by<a class="text-uppercase" href="https://1.envato.market/pixinvent_portfolio" target="_blank">Pixinvent</a></span>
+            <button class="btn btn-primary btn-icon scroll-top" type="button"><i class="bx bx-up-arrow-alt"></i></button>
+        </p>
+    </footer>
+    <!-- END: Footer-->
+
+
+    <!-- BEGIN: Vendor JS-->
+    <script src="app-assets/vendors/js/vendors.min.js"></script>
+    <script src="app-assets/fonts/LivIconsEvo/js/LivIconsEvo.tools.js"></script>
+    <script src="app-assets/fonts/LivIconsEvo/js/LivIconsEvo.defaults.js"></script>
+    <script src="app-assets/fonts/LivIconsEvo/js/LivIconsEvo.min.js"></script>
+    <!-- BEGIN Vendor JS-->
+
+    <!-- BEGIN: Page Vendor JS-->
+    <!-- END: Page Vendor JS-->
+
+    <!-- BEGIN: Theme JS-->
+    <script src="app-assets/js/scripts/configs/vertical-menu-light.js"></script>
+    <script src="app-assets/js/core/app-menu.js"></script>
+    <script src="app-assets/js/core/app.js"></script>
+    <script src="app-assets/js/scripts/components.js"></script>
+    <script src="app-assets/js/scripts/footer.js"></script>
+    <!-- END: Theme JS-->
+
+    <!-- BEGIN: Page JS-->
+    <!-- END: Page JS-->
+
+</body>
+<!-- END: Body-->
+
+</html>
