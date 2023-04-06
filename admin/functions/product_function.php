@@ -6,7 +6,7 @@ if(isset($_POST['add_product'])){
     $category_id= $_POST['category_id']; 
     $status= $_POST['status']; 
     $image_name = time() . '-' . $_FILES['image']['name'];
-    $image_dirction = 'images/';
+    $image_dirction = '../images/';
     $image_target = $image_dirction . basename($image_name);
     move_uploaded_file($_FILES['image']['tmp_name'] ,$image_target );
 
@@ -39,7 +39,7 @@ if(isset($_POST['update_product'])){
     $category_id= $_POST['category_id']; 
     $status= $_POST['status']; 
     $image_name = time() . '-' . $_FILES['image']['name'];
-    $image_dirction = 'images/';
+    $image_dirction = '../images/';
     $image_target = $image_dirction . basename($image_name);
     move_uploaded_file($_FILES['image']['tmp_name'] ,$image_target );
     if(!empty($_FILES['image']['name'])){

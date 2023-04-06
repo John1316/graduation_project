@@ -139,7 +139,7 @@
                                             <td><?php echo $result['name'] ?></td>
                                             <td><?php echo $result['price'] ?></td>
                                             <td>
-                                            <img src="images/<?php echo $result['image'] ?>" height="50" width="50" alt="">    
+                                            <img src="../images/<?php echo $result['image'] ?>" height="50" width="50" alt="">    
                                             </td>
                                             <td><?php echo $result['category_name'] ?></td>
                                             <td><?php echo $status ?></td>
