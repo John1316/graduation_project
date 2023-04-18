@@ -6046,6 +6046,7 @@ a.scroll:hover span {
     margin-top: 16px;
     display: flex;
     align-items: center;
+
 }
 
 .all-filter .categories-page-filter ul.all-option li.grid-list-option:first-child {
@@ -6064,8 +6065,12 @@ a.scroll:hover span {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     line-height: 1;
+    cursor: pointer !important;
+
+}
+.all-filter .categories-page-filter ul.all-option li.grid-list-option:hover a {
+    font-weight: 700;
 }
 
 .all-filter .price-filter h4 {

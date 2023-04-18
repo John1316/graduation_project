@@ -120,7 +120,7 @@
                             <div class="list-product">
                                 <?php
                                 if(isset($_GET['category_id'])){
-                                    $products_stat = "SELECT * FROM `products` where `category_id` = ".$_GET['category_id']." ";
+                                    $products_stat = "SELECT * FROM `products` where `category_id` = ".$_GET['category_id']."AND `status`=1 ";
                                     $products_query = mysqli_query($connection, $products_stat) or die ('Error in cat'. mysqli_error());
     
                                     while($result = mysqli_fetch_array($products_query)){
@@ -158,7 +158,7 @@
                                 
                                 }else{
                                     
-                                    $products_stat = "SELECT * FROM `products`";
+                                    $products_stat = "SELECT * FROM `products` WHERE `status`=1 ";
                                     $products_query = mysqli_query($connection, $products_stat) or die ('Error in cat'. mysqli_error());
                                     
                                     while($result = mysqli_fetch_array($products_query)){

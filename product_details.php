@@ -1,3 +1,8 @@
+<?php 
+    require_once('functions/connection.php');
+    include('functions/details.php')
+
+?>
 <!DOCTYPE html>
 <html lang="en">
     
@@ -47,7 +52,7 @@
                         <div class="about-l">
                             <ul class="about-link">
                                 <li class="go-home"><a href="index.php">Home</a></li>
-                                <li class="about-p"><span>Meat Kebab
+                                <li class="about-p"><span><?php echo $result_details['name'] ?>
                                 </span></li>
                             </ul>
                         </div>
@@ -57,16 +62,22 @@
         </div>
     </section>
     <!-- breadcrumb end -->
+    <?php if(isset($success_reserve)) { ?>
+
+<div class="alert alert-success" role="alert">
+<?php echo $success_reserve; ?>
+</div>
+<?php  } ?>
         <!-- product info start -->
         <section class="section-tb-padding pro-page">
             <div class="container">
                 <div class="row">
                     <div class="row pro-image">
                         <div class="col-lg-5 col-md-6 col-12 col-xs-12 larg-image">
-                            <img src="assets/image/Grill_Valley/Home/Menu/Meat Corner/1.jpg" class="w-100" alt="">
+                            <img src="images/<?php echo $result_details['image'] ?>" class="w-100" alt="">
                         </div>
                         <div class="col-lg-7 col-md-6 col-12 col-xs-12 pro-info">
-                            <h4>Mix Meat
+                            <h4><?php echo $result_details['name'] ?>
                             </h4>
                             
                             <div class="pro-availabale">
@@ -74,18 +85,24 @@
                                 <span class="pro-instock">In stock</span>
                             </div>
                             <div class="pro-price">
-                                <span class="new-price">210 LE</span>
-                                <span class="old-price"><del>230 LE</del></span>
+                                <span class="new-price"><?php echo $result_details['price'] ?> LE</span>
+                                <?php if($result_details['old_price'] != null || $result_details['old_price'] > 0) { ?>
+                                <span class="old-price"><del><?php echo $result_details['old_price'] ?> LE</del></span>
+                                
                                 <div class="Pro-lable">
-                                    <span class="p-discount">-8%</span>
+                                    <span class="p-discount">
+                                        <?php echo (($result_details['price'] / $result_details['old_price']) * 100) - 100 ?> %
+
+                                    </span>
                                 </div>
+                                <?php } ?>
                             </div>
                             <span class="pro-details">Hurry up! only <span class="pro-number">7</span> products left in stock!</span>
                             <p>Hanging out at Grill Valley with friends and loved ones has always been one of the best experiences ever, with delicious food, friendly service and some nice ambience. You always feel happy and comfortable!
                             </p>
-                            <form action="" method="post">
+                            <form method="post">
 
-                                <div class="pro-qty">
+                                <!-- <div class="pro-qty">
                                     <span class="qty">Quantity:</span>
                                     <div class="plus-minus mt-0">
                                         <span>
@@ -94,14 +111,23 @@
                                             <a href="javascript:void(0)" class="plus-btn text-black">+</a>
                                         </span>
                                     </div>
-                                </div>
+                                </div> -->
+                                <input type="password" name="visa" class="form-control" placeholder="visa" />
                                 <div class="pro-btn">
                                 <!-- <a href="wishlist.html" class="btn btn-style1"><i class="fa fa-heart"></i></a> -->
-                                <button type="submit" class="btn btn-style1 addToCartIcon">
+                                <?php if(isset($_SESSION['user_id'])) { ?>
+                                <button type="submit" name="submit_reservation" class="btn btn-style1 addToCartIcon">
                                     <span>
                                         <i class="fa fa-shopping-bag"></i> Reserve
                                     </span>
                                 </button>
+                                <?php }else{ ?>
+                                    <a href="login.php"  class="btn btn-style1 addToCartIcon">
+                                    <span>
+                                        <i class="fa fa-shopping-bag"></i> Reserve
+                                    </span>
+                                    </a>
+                                    <?php } ?>
                             </form>
                             </div>
                             <!-- <div class="share">
@@ -149,268 +175,45 @@
                         </div>
                         <div class="home6-tab swiper-container">
                             <div class="swiper-wrapper">
+                                <?php
+                                    $products_stat = "SELECT * FROM `products` WHERE `status`=1 AND `category_id`=".$result_details['category_id']." AND `id` != ".$result_details['id']." ";
+                                    $products_query = mysqli_query($connection, $products_stat) or die ('Error in cat'. mysqli_error());
+                                    
+                                    while($result = mysqli_fetch_array($products_query)){
+    
+    
+                                    ?>
                                 <div class="swiper-slide">
                                     <div class="tab-product">
                                         <div class="tred-pro">
                                             <div class="tr-pro-img">
                                                 <a href="product-style-6.html">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Grilled Chicken/1.jpg" alt="pro-img1" class="img-fluid">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Grilled Chicken/1.jpg" alt="additional image" class="img-fluid additional-image">
+                                                    <img src="images/<?php 
+                                            echo $result['image']
+                                            ?>" alt="pro-img1" class="img-fluid">
                                                 </a>
-                                            </div>
-                                            <div class="Pro-lable">
-                                                <span class="p-text">New</span>
-                                            </div>
-                                            <div class="pro-icn">
-                                                <a href="cart.html" class="w-c-q-icn"><i class="fa fa-shopping-bag"></i></a>
-                                                <a href="javascript:void(0)"  class="w-c-q-icn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-eye"></i></a>
                                             </div>
                                         </div>
                                         <div class="tab-caption">
-                                            <h3><a href="product-style-6.html">Stuffed Chicken
+                                            <h3><a href="product_details.php?id=<?php 
+                                            echo $result['id']
+                                            ?>"><?php 
+                                            echo $result['name']
+                                            ?>
                                             </a></h3>
                                             
                                             <div class="pro-price">
-                                                <span class="new-price">92 LE
+                                                <span class="new-price"><?php 
+                                            echo $result['price']
+                                            ?> LE
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="swiper-slide">
-                                    <div class="tab-product">
-                                        <div class="tred-pro">
-                                            <div class="tr-pro-img">
-                                                <a href="product-style-6.html">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Main Platters/1.jpg" alt="pro-img1" class="img-fluid">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Main Platters/1.jpg" alt="additional image" class="img-fluid additional-image">
-                                                </a>
-                                            </div>
-                                            <div class="Pro-lable">
-                                                <span class="p-discount">-10%</span>
-                                            </div>
-                                            <div class="pro-icn">
-                                                <a href="cart.html" class="w-c-q-icn"><i class="fa fa-shopping-bag"></i></a>
-                                                <a href="javascript:void(0)"  class="w-c-q-icn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="tab-caption">
-                                            <h3><a href="product-style-6.html">Stuffed Pigeon with Grits
-                                            </a></h3>
-
-                                            <div class="pro-price">
-                                                <span class="new-price">72 LE
-                                                </span>
-                                                <span class="old-price"><del>79 LE</del></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="tab-product">
-                                        <div class="tred-pro">
-                                            <div class="tr-pro-img">
-                                                <a href="product-style-6.html">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Meat Corner/1.jpg" alt="pro-img1" class="img-fluid">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Meat Corner/1.jpg" alt="additional image" class="img-fluid additional-image">
-                                                </a>
-                                            </div>
-                                            
-                                            <div class="pro-icn">
-                                                <a href="cart.html" class="w-c-q-icn"><i class="fa fa-shopping-bag"></i></a>
-                                                <a href="javascript:void(0)"  class="w-c-q-icn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="tab-caption">
-                                            <h3><a href="product-style-6.html">Meat Kebab
-                                            </a></h3>
-                                            
-                                            <div class="pro-price">
-                                                <span class="new-price">220 LE</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="tab-product">
-                                        <div class="tred-pro">
-                                            <div class="tr-pro-img">
-                                                <a href="product-style-6.html">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Variety Platters/3.jpg" alt="pro-img1" class="img-fluid">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Variety Platters/3.jpg" alt="additional image" class="img-fluid additional-image">
-                                                </a>
-                                            </div>
-                                            <div class="Pro-lable">
-                                                <span class="p-text">New</span>
-                                            </div>
-                                            <div class="pro-icn">
-                                                <a href="cart.html" class="w-c-q-icn"><i class="fa fa-shopping-bag"></i></a>
-                                                <a href="javascript:void(0)"  class="w-c-q-icn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="tab-caption">
-                                            <h3><a href="product-style-6.html">Vine Leaves
-                                            </a></h3>
-
-                                            <div class="pro-price">
-                                                <span class="new-price">110 LE</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="tab-product">
-                                        <div class="tred-pro">
-                                            <div class="tr-pro-img">
-                                                <a href="product-style-6.html">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Variety Platters/1.jpg" alt="pro-img1" class="img-fluid">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Variety Platters/1.jpg" alt="additional image" class="img-fluid additional-image">
-                                                </a>
-                                            </div>
-                                            <div class="Pro-lable">
-                                                <span class="p-discount">-12%</span>
-                                            </div>
-                                            <div class="pro-icn">
-                                                <a href="cart.html" class="w-c-q-icn"><i class="fa fa-shopping-bag"></i></a>
-                                                <a href="javascript:void(0)"  class="w-c-q-icn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="tab-caption">
-                                            <h3><a href="product-style-6.html">Mombar</a></h3>
-                                            
-                                            <div class="pro-price">
-                                                <span class="new-price">140 LE</span>
-                                                <span class="old-price"><del>145 LE</del></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="tab-product">
-                                        <div class="tred-pro">
-                                            <div class="tr-pro-img">
-                                                <a href="product-style-6.html">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Soups/1.jpg" alt="pro-img1" class="img-fluid">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Soups/1.jpg" alt="additional image" class="img-fluid additional-image">
-                                                </a>
-                                            </div>
-                                            
-                                            <div class="pro-icn">
-                                                <a href="cart.html" class="w-c-q-icn"><i class="fa fa-shopping-bag"></i></a>
-                                                <a href="javascript:void(0)"  class="w-c-q-icn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="tab-caption">
-                                            <h3><a href="product-style-6.html">Pigeons With Vermicelli Soup
-                                            </a></h3>
-                                            
-                                            <div class="pro-price">
-                                                <span class="new-price">15 LE</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="tab-product">
-                                        <div class="tred-pro">
-                                            <div class="tr-pro-img">
-                                                <a href="product-style-6.html">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Main Platters/2.jpg" alt="pro-img1" class="img-fluid">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Main Platters/2.jpg" alt="additional image" class="img-fluid additional-image">
-                                                </a>
-                                            </div>
-
-                                            <div class="pro-icn">
-                                                <a href="cart.html" class="w-c-q-icn"><i class="fa fa-shopping-bag"></i></a>
-                                                <a href="javascript:void(0)"  class="w-c-q-icn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="tab-caption">
-                                            <h3><a href="product-style-6.html">Plain Veal Shank
-                                            </a></h3>
-
-                                            <div class="pro-price">
-                                                <span class="new-price">140 LE
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="tab-product">
-                                        <div class="tred-pro">
-                                            <div class="tr-pro-img">
-                                                <a href="product-style-6.html">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Meat Corner/2.jpg" alt="pro-img1" class="img-fluid">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Meat Corner/2.jpg" alt="additional image" class="img-fluid additional-image">
-                                                </a>
-                                            </div>
-                                            <div class="Pro-lable">
-                                                <span class="p-text">New</span>
-                                            </div>
-                                            <div class="pro-icn">
-                                                <a href="cart.html" class="w-c-q-icn"><i class="fa fa-shopping-bag"></i></a>
-                                                <a href="javascript:void(0)"  class="w-c-q-icn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="tab-caption">
-                                            <h3><a href="product-style-6.html">Mix Meat
-                                            </a></h3>
-                                            
-                                            <div class="pro-price">
-                                                <span class="new-price">210 EGP</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="tab-product">
-                                        <div class="tred-pro">
-                                            <div class="tr-pro-img">
-                                                <a href="product-style-6.html">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Meat Corner/4.jpg" alt="pro-img1" class="img-fluid">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Meat Corner/4.jpg" alt="additional image" class="img-fluid additional-image">
-                                                </a>
-                                            </div>
-                                            <div class="pro-icn">
-                                                <a href="cart.html" class="w-c-q-icn"><i class="fa fa-shopping-bag"></i></a>
-                                                <a href="javascript:void(0)"  class="w-c-q-icn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="tab-caption">
-                                            <h3><a href="product-style-6.html">Meat Dish</a></h3>
-                                            <div class="pro-price">
-                                                <span class="new-price">300 LE</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="tab-product">
-                                        <div class="tred-pro">
-                                            <div class="tr-pro-img">
-                                                <a href="product-style-6.html">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Soups/3.jpg" alt="pro-img1" class="img-fluid">
-                                                    <img src="assets/image/Grill_Valley/Home/Menu/Soups/3.jpg" alt="additional image" class="img-fluid additional-image">
-                                                </a>
-                                            </div>
-                                            <div class="Pro-lable">
-                                                <span class="p-text">New</span>
-                                            </div>
-                                            <div class="pro-icn">
-                                                <a href="cart.html" class="w-c-q-icn"><i class="fa fa-shopping-bag"></i></a>
-                                                <a href="javascript:void(0)"  class="w-c-q-icn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="tab-caption">
-                                            <h3><a href="product-style-6.html">Vegetables Soup</a></h3>
-                                            <div class="pro-price">
-                                                <span class="new-price">12 LE</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
+                                <?php
+                                    }
+                                ?>
                             </div>
                         </div>
                     </div>

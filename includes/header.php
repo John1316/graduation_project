@@ -52,6 +52,7 @@
                                                         <span class="acc-title"><?php echo $_SESSION['name']; ?></span>
                                                     <div class="account-login">
                                                         <a href="logout.php">Logout</a>
+                                                        <a href="profile.php">profile</a>
                                                     </div>
                                                     <?php } ?>
 
